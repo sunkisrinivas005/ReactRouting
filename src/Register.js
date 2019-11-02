@@ -52,12 +52,14 @@ handleLandingPage = (value) => {
      let validatePassword = await Validation(passwordRegex, password)
      let passwordChecking = await PasswordCheck(password, retypePassword);
      let validateEmail = await Validation(emailRegex, email);
+     let vals
     if(validateUserName && validatePassword && validateEmail && passwordChecking){
       this.setState({
         loader: true
       })
-      let apiLink = `https://6wigsfvq8a.execute-api.ca-central-1.amazonaws.com/registrationapistage?username=${userName}&email=${email}.com&password=${password}`;
-      let response = await API(apiLink);
+      let url = `https://6wigsfvq8a.execute-api.ca-central-1.amazonaws.com/registrationapistage?username=${userName}&email=${email}.com&password=${password}`;
+       const method = 'GET';
+      let response = await API({url, method});
       this.setState({
         error : response && response.statusCode && response.statusCode === 200  && response.body === "user already exists"? true : false,
         Message : response && response.body ? response.body : "",
@@ -78,7 +80,10 @@ handleLandingPage = (value) => {
       }else {
       this.setState({
         error : true,
-        Message : validateUserName ? validatePassword ? passwordChecking ? validateEmail ?  null : "enter a Valid emailId" : "password didnt Match"  : "password must be unique follow must have points" : "enter a unique userName"
+        validateUserName  :  validateUserName ? false : true,
+        validatePassword : validatePassword ? false : true,
+        validateEmail : validateEmail ? false : true,
+        ValidateRetypePassword : retypePassword ? false  : true
       })
       }
     }
@@ -104,14 +109,14 @@ handleLandingPage = (value) => {
                       </InputGroupAddon>
                       <Input type="text" placeholder="Username" autoComplete="username" name = "userName"  value = {userName} onChange = {(e) => this.handleChange(e)} onKeyPress ={(e) => {if (e.key === 'Enter') e.preventDefault()}} className = {validateUserName ? 'block-example border border-danger' : ""} />
                     </InputGroup>
-                     <p style ={{color: "red", fontSize: 10}}>{validateUserName ? "* user name is required" : null}</p>
+                     <p style ={{color: "red", fontSize: 10}}>{validateUserName && Message === "" ? "* user name is required" : validateUserName  && Message !== "" ? "please enter a valid userName" : null}</p>
                     <InputGroup className="mb-3">
                       <InputGroupAddon addonType="prepend">
                         <InputGroupText>@</InputGroupText>
                       </InputGroupAddon>
                       <Input type="text" placeholder="Email" autoComplete="email" name = "email"  value = {email} onChange = {(e) => this.handleChange(e)} onKeyPress ={(e) => {if (e.key === 'Enter') e.preventDefault()}} className = {validateEmail ? 'block-example border border-danger' : ""} />
                     </InputGroup>
-                     <p style ={{color: "red", fontSize: 10}}>{validateEmail ? "* email-id is required" : null}</p>
+                     <p style ={{color: "red", fontSize: 10}}>{validateEmail && Message === "" ? "* email-id is required" : validateEmail  && Message !== "" ? "* please enter a valid email-id" : null}</p>
                     <InputGroup className="mb-3">
                       <InputGroupAddon addonType="prepend">
                         <InputGroupText>
@@ -120,7 +125,7 @@ handleLandingPage = (value) => {
                       </InputGroupAddon>
                       <Input type="password" placeholder="Password" autoComplete="new-password"  name = "password" value = {password} onChange = {(e) => this.handleChange(e)} onKeyPress ={(e) => {if (e.key === 'Enter') e.preventDefault()}} className = {validatePassword ? 'block-example border border-danger' : ""} />
                     </InputGroup>
-                     <p style ={{color: "red", fontSize: 10}}>{validatePassword ? "* password is required" : null}</p>
+                     <p style ={{color: "red", fontSize: 10}}>{validatePassword && Message === "" ? "* password is required" : validatePassword  && Message !== "" ? "* please enter a valid password " : null}</p>
                     <InputGroup className="mb-4">
                       <InputGroupAddon addonType="prepend">
                         <InputGroupText>
@@ -129,7 +134,7 @@ handleLandingPage = (value) => {
                       </InputGroupAddon>
                       <Input type="password" placeholder="Repeat password" autoComplete="new-password" value = {retypePassword} name = "retypePassword" onChange = {(e) => this.handleChange(e)} onKeyPress ={(e) => {if (e.key === 'Enter') e.preventDefault()}} className = {ValidateRetypePassword ? 'block-example border border-danger' : ""} />
                     </InputGroup>
-                     <p style ={{color: "red", fontSize: 10}}>{ValidateRetypePassword ? "* retype-password is required" : null}</p>
+                     <p style ={{color: "red", fontSize: 10}}>{ValidateRetypePassword && Message === "" ? "* password is required" : ValidateRetypePassword  && Message !== "" ? "* please enter a valid password " : null }</p>
                       <Button color="dark" block onClick = {this.handleSubmit}>Create Account{loader ? <Spinner size="sm" color="light" style ={{marginTop: "10px", marginLeft: "10px"}} />  :null}</Button>
                   </Form>
                 </CardBody>

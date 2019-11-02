@@ -48,9 +48,15 @@ handleLandingPage = (error) => {
     let value = await Validation(userNameRegex, userName);
     let pass = await Validation(passwordRegex, password);
     let passwordCheck = await PasswordCheck(retypePassword, password);
+    console.log(value, pass, passwordCheck, "passwordCheckpasswordCheckpasswordCheck")
     if(value && pass && passwordCheck ){
-      let apiLink = `https://kawlzrot5j.execute-api.ca-central-1.amazonaws.com/logincheckapi?username=${userName}&password=${password}`;
-      let response = await API(apiLink);
+      let url = `https://i04pzqzz8d.execute-api.ca-central-1.amazonaws.com/forgotpasswordAPI`;
+      let method  = "POST";
+      let data = {
+        name : userName,
+        password
+      }
+      let response = await API({url, method, data});
       this.setState({
         error : response && response.statusCode && response.statusCode === 200 && response.body !== "unsuccessful" ? false : true,
         Message : response && response.body ? response.body : ""
@@ -68,7 +74,11 @@ handleLandingPage = (error) => {
                 
       }else {
         this.setState({
-        error : true
+        error : true,
+        validateUserName  :  !value ? false : true,
+        validatePassword : pass ? false : true,
+        validateRetypePassword : passwordCheck ? false : true,
+
               })
       }
     }
@@ -76,7 +86,7 @@ handleLandingPage = (error) => {
 
   render() {
     let {retypePassword, password, error, Message, userName, validateUserName, validatePassword, validateRetypePassword} = this.state;
-    console.log(validateRetypePassword, "statefrom");
+    console.log(validateRetypePassword, retypePassword, password, "statefrom");
     return (
        <div className="app flex-row align-items-center">
         <Container style ={{marginTop : "150px"}}>
@@ -95,25 +105,25 @@ handleLandingPage = (error) => {
                       </InputGroupAddon>
                       <Input type="text" placeholder="user Name" autoComplete="new-password" value = {userName}  name = "userName" onChange = {(e) => this.handleChange(e)} onKeyPress ={(e) => {if (e.key === 'Enter') e.preventDefault()}} className = {validateUserName ? 'block-example border border-danger' : ""}  />
                     </InputGroup>
-                     <p style ={{color: "red", fontSize: 10}}>{validateUserName ? "* user name is required" : null}</p>
+                      <p style ={{color: "red", fontSize: 10}}>{validateUserName && Message === "" ? "* user name is required" : validateUserName  && Message !== "" ? "please enter a valid userName" : null}</p>
                     <InputGroup className="mb-3">
                       <InputGroupAddon addonType="prepend">
                         <InputGroupText>
                           <i className="icon-lock"></i>
                         </InputGroupText>
                       </InputGroupAddon>
-                      <Input type="password" placeholder="Password" autoComplete="new-password" value = {password}  name = "password" onChange = {(e) => this.handleChange(e)} onKeyPress ={(e) => {if (e.key === 'Enter') e.preventDefault()}} className = {validatePassword ? 'block-example border border-danger' : ""} />
+                      <Input type="password" placeholder="new-password" autoComplete="new-password" value = {password}  name = "password" onChange = {(e) => this.handleChange(e)} onKeyPress ={(e) => {if (e.key === 'Enter') e.preventDefault()}} className = {validatePassword ? 'block-example border border-danger' : ""} />
                     </InputGroup>
-                    <p style ={{color: "red", fontSize: 10}}>{validatePassword ? "* password is required" : null}</p>
+                      <p style ={{color: "red", fontSize: 10}}>{validatePassword && Message === "" ? "* password is required" :  validatePassword  && Message !== "" ? "please enter a valid Password" : null}</p>
                     <InputGroup className="mb-4">
                       <InputGroupAddon addonType="prepend">
                         <InputGroupText>
                           <i className="icon-lock"></i>
                         </InputGroupText>
                       </InputGroupAddon>
-                      <Input type="password" placeholder="Repeat password" autoComplete="new-password" name = "retypePassword" value = {retypePassword} onChange = {(e) => this.handleChange(e)} onKeyPress ={(e) => {if (e.key === 'Enter') e.preventDefault()}} className = {validateRetypePassword ? 'block-example border border-danger' : ""}  />
+                      <Input type="password" placeholder="Repeat new-password" autoComplete="new-password" name = "retypePassword" value = {retypePassword} onChange = {(e) => this.handleChange(e)} onKeyPress ={(e) => {if (e.key === 'Enter') e.preventDefault()}} className = {validateRetypePassword ? 'block-example border border-danger' : ""}  />
                     </InputGroup>
-                    <p style ={{color: "red", fontSize: 10}}>{validateRetypePassword ? "* retype-password is required" : null}</p>
+                      <p style ={{color: "red", fontSize: 10}}>{validateRetypePassword && Message === "" ? "* retype-password is required" :  validateRetypePassword  && Message !== "" ? "please enter a valid retype-Password" : null}</p>
                     <Button color="success" block  onClick = {this.handleSubmit}>Set Password</Button>
                   </Form>
                 </CardBody>

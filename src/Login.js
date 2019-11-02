@@ -49,8 +49,9 @@ handleLandingPage = (error) => {
       this.setState({
         loader: true
       })
-      let apiLink = `https://kawlzrot5j.execute-api.ca-central-1.amazonaws.com/logincheckapi?username=${userName}&password=${password}`;
-      let response = await API(apiLink);
+      let url = `https://kawlzrot5j.execute-api.ca-central-1.amazonaws.com/logincheckapi?username=${userName}&password=${password}`;
+      let method  = "GET";
+      let response = await API({url, method});
       this.setState({
         error : response && response.statusCode && response.statusCode === 200 && response.body !== "unsuccessful" ? false : true,
         Message : response && response.body ? response.body : "",
@@ -109,7 +110,7 @@ handleLandingPage = (error) => {
                         </InputGroupAddon>
                         <Input type="password" placeholder="Password" autoComplete="current-password" name = "password"  value = {password}  onChange = {(e) => this.handleChange(e)} onKeyPress ={(e) => {if (e.key === 'Enter') e.preventDefault()}} className = {validatePassword ? 'block-example border border-danger' : ""} />
                       </InputGroup>
-                      <p style ={{color: "red", fontSize: 10}}>{validatePassword && Message === "" ? "* password is required" :  validatePassword  && Message !== "" ? "please enter a valid userName" : null}</p>
+                      <p style ={{color: "red", fontSize: 10}}>{validatePassword && Message === "" ? "* password is required" :  validatePassword  && Message !== "" ? "please enter a valid Password" : null}</p>
                       <Row>
                         <Col xs="6">
                           <Button color="dark" className="px-8" onClick = {this.handleSubmit}>Login{loader ? <Spinner size="sm" color="light" style ={{marginTop: "10px", marginLeft: "10px"}} />  :null}</Button>
