@@ -12,7 +12,10 @@ class Login extends Component {
        Message : "", 
        validateUserName : false,
        validatePassword : false,
-       loader :false
+       loader :false,
+       redUserName : false,
+       redPassword : false
+
      }
 
 handleChange =(e) => {
@@ -22,7 +25,9 @@ handleChange =(e) => {
     let {userName, password} = this.state
     this.setState({
        validateUserName : userName !== "" ? false : null,
-       validatePassword : password !== "" ? false : null
+       validatePassword : password !== "" ? false : null,
+       redPassword : password !== "" ? false : null,
+       redUserName : userName !== "" ? false : null
     })
   })
 }
@@ -49,13 +54,13 @@ handleLandingPage = (error) => {
       this.setState({
         loader: true
       })
-      let url = `https://kawlzrot5j.execute-api.ca-central-1.amazonaws.com/logincheckapi?username=${userName}&password=${password}`;
-      let method  = "GET";
-      let response = await API({url, method});
+      let apiLink = `https://kawlzrot5j.execute-api.ca-central-1.amazonaws.com/logincheckapi?username=${userName}&password=${password}`;
+      let response = await API(apiLink);
       this.setState({
         error : response && response.statusCode && response.statusCode === 200 && response.body !== "unsuccessful" ? false : true,
         Message : response && response.body ? response.body : "",
-        loader :false
+        loader :false,
+        type : "unchecked"
       }, () => {
         let {error} = this.state
         this.handleLandingPage(error)
@@ -64,15 +69,15 @@ handleLandingPage = (error) => {
       if(userName === "" || password === ""){
                  this.setState({
                   validateUserName : userName=== "" ? true : false,
-                  validatePassword : password === "" ? true : false
+                  validatePassword : password === "" ? true : false,
                  })  
                 
       }else {
        
         this.setState({
         error : true,
-        validateUserName  :  validateUserName ? false : true,
-        validatePassword : validatePassword ? false : true
+        redUserName  :  validateUserName ? false : true,
+        redPassword : validatePassword ? false : true,
               }, () => {
                 setTimeout(() => this.setState({error:false}), 1500)
               })
@@ -81,7 +86,7 @@ handleLandingPage = (error) => {
   }
 
   render() {
-    let {userName, password, error, Message, validatePassword, validateUserName, loader} = this.state;
+    let {userName, password, error, Message, validatePassword, validateUserName, loader, redPassword, redUserName} = this.state;
     return (
       <div className="app flex-row align-items-center">
         <Container style ={{marginTop : "150px"}}>
@@ -99,18 +104,18 @@ handleLandingPage = (error) => {
                             <i className="icon-user"></i>
                           </InputGroupText>
                         </InputGroupAddon>
-                        <Input type="text" placeholder="Username" autoComplete="username" name = "userName" value = {userName} onChange = {(e) => this.handleChange(e)} onKeyPress ={(e) => {if (e.key === 'Enter') e.preventDefault()}} className = {validateUserName ? 'block-example border border-danger' : ""} />
+                        <Input type="text" placeholder="Username" autoComplete="username" name = "userName" value = {userName} onChange = {(e) => this.handleChange(e)} onKeyPress ={(e) => {if (e.key === 'Enter') e.preventDefault()}} className = {validateUserName || redUserName ? 'block-example border border-danger' : ""} />
                       </InputGroup>
-                      <p style ={{color: "red", fontSize: 10}}>{validateUserName && Message === "" ? "* user name is required" : validateUserName  && Message !== "" ? "please enter a valid userName" : null}</p>
+                      <p style ={{color: "red", fontSize: 10}}>{redPassword ? "please enter a valid userName" : validateUserName  ? "* user name is required" : null}</p>
                       <InputGroup className="mb-4">
                         <InputGroupAddon addonType="prepend">
                           <InputGroupText>
                             <i className="icon-lock"></i>
                           </InputGroupText>
                         </InputGroupAddon>
-                        <Input type="password" placeholder="Password" autoComplete="current-password" name = "password"  value = {password}  onChange = {(e) => this.handleChange(e)} onKeyPress ={(e) => {if (e.key === 'Enter') e.preventDefault()}} className = {validatePassword ? 'block-example border border-danger' : ""} />
+                        <Input type="password" placeholder="Password" autoComplete="current-password" name = "password"  value = {password}  onChange = {(e) => this.handleChange(e)} onKeyPress ={(e) => {if (e.key === 'Enter') e.preventDefault()}} className = {validatePassword  || redPassword ? 'block-example border border-danger' : ""} />
                       </InputGroup>
-                      <p style ={{color: "red", fontSize: 10}}>{validatePassword && Message === "" ? "* password is required" :  validatePassword  && Message !== "" ? "please enter a valid Password" : null}</p>
+                      <p style ={{color: "red", fontSize: 10}}>{redPassword  ? "* please enter a valid password" :  validatePassword  ? "* password is required" : null}</p>
                       <Row>
                         <Col xs="6">
                           <Button color="dark" className="px-8" onClick = {this.handleSubmit}>Login{loader ? <Spinner size="sm" color="light" style ={{marginTop: "10px", marginLeft: "10px"}} />  :null}</Button>

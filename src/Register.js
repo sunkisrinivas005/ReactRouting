@@ -16,7 +16,11 @@ class Register extends Component {
     validateUserName : false,
     ValidateRetypePassword : false,
     validatePassword : false,
-    loader : false
+    loader : false,
+     redUserName : false,
+    redPassword : false,
+    redEmail : false,
+    redValidatePassword : false,
   }
 
 handleChange =(e) => {
@@ -28,7 +32,11 @@ this.setState({
     validateEmail :  email !== "" ? false : null,
     validatePassword :  password !== "" ? false : null,
     ValidateRetypePassword : retypePassword !== "" ? false : null,
-       validateUserName : userName !== "" ? false : null,
+    validateUserName : userName !== "" ? false : null,
+    redUserName : userName !== "" ? false : null,
+    redPassword :  password !== "" ? false : null,
+    redEmail : email !== "" ? false : null,
+    redValidatePassword : retypePassword !== "" ? false : null,
     })
   })
 }
@@ -52,7 +60,6 @@ handleLandingPage = (value) => {
      let validatePassword = await Validation(passwordRegex, password)
      let passwordChecking = await PasswordCheck(password, retypePassword);
      let validateEmail = await Validation(emailRegex, email);
-     let vals
     if(validateUserName && validatePassword && validateEmail && passwordChecking){
       this.setState({
         loader: true
@@ -70,26 +77,28 @@ handleLandingPage = (value) => {
       })
     }else {
       if(userName === "" || password === "" || retypePassword === "" || email === ""){
-                 this.setState({
-                  validateUserName : userName === "" ? true : false,
-                  validatePassword : password === "" ? true : false,
-                  validateEmail :  email === "" ? true : false,
-                  ValidateRetypePassword : retypePassword === "" ? true : false,
+         this.setState({
+        redUserName  :  userName === "" ? true : false,
+        redPassword :  password === "" ? true : false,
+        redEmail :  email === "" ? true : false,
+        redValidatePassword : retypePassword === "" ? true : false
+
+      })
+      }else {
+           this.setState({
+                  error : true,
+                  validateUserName : validateUserName ? false : true,
+                  validatePassword : validatePassword ? false : true,
+                  validateEmail : validateEmail ? false : true,
+                  ValidateRetypePassword :PasswordCheck ? false  : true
                  })  
                 
-      }else {
-      this.setState({
-        error : true,
-        validateUserName  :  validateUserName ? false : true,
-        validatePassword : validatePassword ? false : true,
-        validateEmail : validateEmail ? false : true,
-        ValidateRetypePassword : retypePassword ? false  : true
-      })
       }
     }
   }
   render() {
-    let {userName, password, email, retypePassword, Message, error, ValidateRetypePassword, validateEmail, validatePassword, validateUserName, loader } = this.state;
+    let {userName, password, email, retypePassword, Message, error, ValidateRetypePassword, validateEmail, validatePassword, validateUserName, loader, redUserName, redPassword, redEmail, redValidatePassword  } = this.state;
+    console.log(redValidatePassword, redUserName, redPassword, "dfdf")
     return (
       <div className="app flex-row align-items-center">
         <Container style ={{marginTop : "150px"}}>
@@ -107,34 +116,34 @@ handleLandingPage = (value) => {
                           <i className="icon-user"></i>
                         </InputGroupText>
                       </InputGroupAddon>
-                      <Input type="text" placeholder="Username" autoComplete="username" name = "userName"  value = {userName} onChange = {(e) => this.handleChange(e)} onKeyPress ={(e) => {if (e.key === 'Enter') e.preventDefault()}} className = {validateUserName ? 'block-example border border-danger' : ""} />
+                      <Input type="text" placeholder="Username" autoComplete="username" name = "userName"  value = {userName} onChange = {(e) => this.handleChange(e)} onKeyPress ={(e) => {if (e.key === 'Enter') e.preventDefault()}} className = {validateUserName || redUserName ? 'block-example border border-danger' : ""} />
                     </InputGroup>
-                     <p style ={{color: "red", fontSize: 10}}>{validateUserName && Message === "" ? "* user name is required" : validateUserName  && Message !== "" ? "please enter a valid userName" : null}</p>
+                     <p style ={{color: "red", fontSize: 10}}>{redUserName ? "* user name is required" : validateUserName  ? "please enter a valid userName" : null}</p>
                     <InputGroup className="mb-3">
                       <InputGroupAddon addonType="prepend">
                         <InputGroupText>@</InputGroupText>
                       </InputGroupAddon>
-                      <Input type="text" placeholder="Email" autoComplete="email" name = "email"  value = {email} onChange = {(e) => this.handleChange(e)} onKeyPress ={(e) => {if (e.key === 'Enter') e.preventDefault()}} className = {validateEmail ? 'block-example border border-danger' : ""} />
+                      <Input type="text" placeholder="Email" autoComplete="email" name = "email"  value = {email} onChange = {(e) => this.handleChange(e)} onKeyPress ={(e) => {if (e.key === 'Enter') e.preventDefault()}} className = {validateEmail || redEmail ? 'block-example border border-danger' : ""} />
                     </InputGroup>
-                     <p style ={{color: "red", fontSize: 10}}>{validateEmail && Message === "" ? "* email-id is required" : validateEmail  && Message !== "" ? "* please enter a valid email-id" : null}</p>
+                     <p style ={{color: "red", fontSize: 10}}>{redEmail ? "* email-id is required" : validateEmail  ? "* please enter a valid email-id" : null}</p>
                     <InputGroup className="mb-3">
                       <InputGroupAddon addonType="prepend">
                         <InputGroupText>
                           <i className="icon-lock"></i>
                         </InputGroupText>
                       </InputGroupAddon>
-                      <Input type="password" placeholder="Password" autoComplete="new-password"  name = "password" value = {password} onChange = {(e) => this.handleChange(e)} onKeyPress ={(e) => {if (e.key === 'Enter') e.preventDefault()}} className = {validatePassword ? 'block-example border border-danger' : ""} />
+                      <Input type="password" placeholder="Password" autoComplete="new-password"  name = "password" value = {password} onChange = {(e) => this.handleChange(e)} onKeyPress ={(e) => {if (e.key === 'Enter') e.preventDefault()}} className = {validatePassword || redPassword ? 'block-example border border-danger' : ""} />
                     </InputGroup>
-                     <p style ={{color: "red", fontSize: 10}}>{validatePassword && Message === "" ? "* password is required" : validatePassword  && Message !== "" ? "* please enter a valid password " : null}</p>
+                     <p style ={{color: "red", fontSize: 10}}>{redPassword  ? "* password is required" : validatePassword ? "* please enter a valid password " : null}</p>
                     <InputGroup className="mb-4">
                       <InputGroupAddon addonType="prepend">
                         <InputGroupText>
                           <i className="icon-lock"></i>
                         </InputGroupText>
                       </InputGroupAddon>
-                      <Input type="password" placeholder="Repeat password" autoComplete="new-password" value = {retypePassword} name = "retypePassword" onChange = {(e) => this.handleChange(e)} onKeyPress ={(e) => {if (e.key === 'Enter') e.preventDefault()}} className = {ValidateRetypePassword ? 'block-example border border-danger' : ""} />
+                      <Input type="password" placeholder="Repeat password" autoComplete="new-password" value = {retypePassword} name = "retypePassword" onChange = {(e) => this.handleChange(e)} onKeyPress ={(e) => {if (e.key === 'Enter') e.preventDefault()}} className = {ValidateRetypePassword || redValidatePassword ? 'block-example border border-danger' : ""} />
                     </InputGroup>
-                     <p style ={{color: "red", fontSize: 10}}>{ValidateRetypePassword && Message === "" ? "* password is required" : ValidateRetypePassword  && Message !== "" ? "* please enter a valid password " : null }</p>
+                     <p style ={{color: "red", fontSize: 10}}>{redValidatePassword  ? "* password is required" : ValidateRetypePassword   ? "* please enter a valid password " : null }</p>
                       <Button color="dark" block onClick = {this.handleSubmit}>Create Account{loader ? <Spinner size="sm" color="light" style ={{marginTop: "10px", marginLeft: "10px"}} />  :null}</Button>
                   </Form>
                 </CardBody>
