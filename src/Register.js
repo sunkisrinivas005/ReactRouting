@@ -143,7 +143,7 @@ handleLandingPage = (value) => {
                       </InputGroupAddon>
                       <Input type="password" placeholder="Repeat password" autoComplete="new-password" value = {retypePassword} name = "retypePassword" onChange = {(e) => this.handleChange(e)} onKeyPress ={(e) => {if (e.key === 'Enter') e.preventDefault()}} className = {ValidateRetypePassword || redValidatePassword ? 'block-example border border-danger' : ""} />
                     </InputGroup>
-                     <p style ={{color: "red", fontSize: 10}}>{redValidatePassword  ? "* password is required" : ValidateRetypePassword   ? "* please enter a valid password " : null }</p>
+                     <p style ={{color: "red", fontSize: 10}}>{redValidatePassword  ? "* password is required" : ValidateRetypePassword   ? "* password doesnt match " : null }</p>
                       <Button color="dark" block onClick = {this.handleSubmit}>Create Account{loader ? <Spinner size="sm" color="light" style ={{marginTop: "10px", marginLeft: "10px"}} />  :null}</Button>
                   </Form>
                 </CardBody>
