@@ -12,14 +12,22 @@ class LandingPage extends React.Component {
     AgenciesData : []
   };
 
-  componentWillMount = () => {
-    let filterData = data.map(i => i.ULB).map(i => {
+  componentWillMount = async() => {
+    let Authenticated = await isAuthenticated();
+    console.log(Authenticated, "ddddd")
+    this.setState({
+      Authenticated : Authenticated
+    })
+    if(!Authenticated){
+    this.props.history.push('/login')
+  }else {
+ let filterData = data.map(i => i.ULB).map(i => {
       return {text :i , value : i}
     });
      this.setState({
       filterData
      })
-
+  }
   }
 
   handleChange = (pagination, filters, sorter) => {
