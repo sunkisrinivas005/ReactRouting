@@ -1,5 +1,8 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+Repo Overview :
+This project solely build for react-routing setup with basic login page and intial setup of react-router.
+
 ## Available Scripts
 
 In the project directory, you can run:
